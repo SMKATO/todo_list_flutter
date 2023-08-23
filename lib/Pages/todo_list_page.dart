@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/task.dart';
 import '../widgets/task_list_item.dart';
 
@@ -14,6 +13,8 @@ class _ToDoListPageState extends State<ToDoListPage> {
   final TextEditingController taskController = TextEditingController();
 
   List<Task> tasks = [];
+  Task? deletedTask;
+  int? deletedTaskPos;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +70,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
                       for(Task task in tasks)
                         TaskListItem(
                           task: task,
+                          onDelete: onDelete,
                         ),
                     ],
                   ),
@@ -100,5 +102,31 @@ class _ToDoListPageState extends State<ToDoListPage> {
       ),
     );
   }
+  void onDelete(Task task) {
+    deletedTask = task;
+    deletedTaskPos = tasks.indexOf(task);
+
+    setState(() {
+      tasks.remove(task);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Tarefa ${task.title} foi removida com sucesso!",
+      style: TextStyle(color: Color(0xff060708)),),
+        backgroundColor: Colors.white,
+        action: SnackBarAction(
+          label: "Desfazer",
+          textColor: const Color(0xff00d7f3),
+          onPressed: () {
+            setState(() {
+              tasks.insert(deletedTaskPos!, deletedTask!);
+            });
+          },
+        )
+      ),
+    );
+  }
 }
+
 
