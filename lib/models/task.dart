@@ -1,17 +1,19 @@
 class Task {
   Task({required this.title, required this.dateTime});
 
+  Task.fromJson(Map<String, dynamic> json)
+      : title = json["title"],
+        dateTime = DateTime.parse(json["datetime"]);
+
   String title;
   DateTime dateTime;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is Task && other.title == title && other.dateTime == dateTime;
+  Map<String, dynamic> toJson() {
+    return {
+      "title": title,
+      "datetime": dateTime.toIso8601String(),
+    };
   }
-
-  @override
-  int get hashCode => title.hashCode ^ dateTime.hashCode;
 }
 
 
